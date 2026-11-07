@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Carrito - Mundo Peludo</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body style="background-color: #F9F9F9;">
+
+    <header class="header">
+        <a href="/" style="text-decoration:none; color:#2A3B8F; font-size:1.5rem;">←</a>
+        <h1 class="logo-text">Mi Carrito</h1>
+        <div style="width: 24px;"></div>
+    </header>
+
+    <section style="padding: 20px; max-width: 800px; margin: 0 auto;">
+        
+        <div th:if="${#lists.isEmpty(items)}" style="text-align: center; margin-top: 50px;">
+            <h2 style="color: #757575;">Tu carrito está vacío 🐾</h2>
+            <a href="/" style="display: inline-block; margin-top: 20px; background: #FF8A65; color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold;">Ir a comprar</a>
+        </div>
+
+        <div th:unless="${#lists.isEmpty(items)}">
+            
+            <!-- MENSAJE DE DESCUENTO -->
+            <div th:if="${aplicaDescuento}" style="background: #E0F2F1; color: #00695C; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; font-weight: bold; border: 1px solid #b2dfdb;">
+                🎉 ¡Felicidades! Se ha aplicado tu 15% de descuento de bienvenida.
+            </div>
+
+            <!-- Lista de productos -->
+            <div th:each="item : ${items}" style="background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <img th:src="${item.producto.imagenUrl}" style="width: 70px; height: 70px; object-fit: contain;">
+                
+                <div style="flex-grow: 1;">
+                    <h3 style="color: #2A3B8F; font-size: 1rem; margin-bottom: 5px;">
+                        <span th:text="${item.producto.nombre}">Nombre</span>
+                    </h3>
+                    
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <a th:href="@{/carrito/restar/{id}(id=${item.id})}" style="background: #eee; padding: 2px 8px; border-radius: 5px; text-decoration: none; color: black; font-weight: bold;">-</a>
+                        <span th:text="${item.cantidad}" style="font-weight: bold;">1</span>
+                        <a th:href="@{/carrito/sumar/{id}(id=${item.id})}" style="background: #eee; padding: 2px 8px; border-radius: 5px; text-decoration: none; color: black; font-weight: bold;">+</a>
+                    </div>
+                </div>
+                
+                <!-- Calculamos el precio final (con o sin descuento) -->
+                <div style="font-weight: 800; color: #2A3B8F;">
+                    <span th:if="${aplicaDescuento}" style="display: block; font-size: 0.8rem; color: #aaa; text-decoration: line-through; font-weight: normal;">S/ <span th:text="${#numbers.formatDecimal(item.producto.precio * item.cantidad, 1, 2)}">0.00</span></span>
+                    <span th:with="precioFinal=${aplicaDescuento ? item.producto.precio * 0.85 : item.producto.precio}">
+                        S/ <span th:text="${#numbers.formatDecimal(precioFinal * item.cantidad, 1, 2)}">0.00</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Resumen de pago -->
+            <div style="background: white; border-radius: 15px; padding: 20px; margin-top: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: #757575;">Subtotal</span>
+                    <span style="font-weight: bold;">S/ <span th:text="${#numbers.formatDecimal(total, 1, 2)}">0.00</span></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                    <span style="color: #757575;">Envío</span>
+                    <span style="font-weight: bold; color: #4DB6AC;">Gratis</span>
+                </div>
+                <hr style="border: none; border-top: 1px solid #eee; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: 800; color: #2A3B8F; margin-bottom: 20px;">
+                    <span>Total</span>
+                    <span>S/ <span th:text="${#numbers.formatDecimal(total, 1, 2)}">0.00</span></span>
+                </div>
+                <a href="/carrito/finalizar" style="display: block; text-align: center; text-decoration: none; width: 100%; background: #FF8A65; color: white; padding: 15px; border-radius: 15px; font-size: 1.1rem; font-weight: bold; box-sizing: border-box;">
+                    Finalizar Compra
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Navegación Inferior (Solo Inicio, Carrito, Perfil) -->
+    <nav class="bottom-nav" style="justify-content: space-around;">
+        <a href="/">🏠 Inicio</a>
+        <a href="/carrito" class="active">🛒 Carrito</a>
+        <a href="/perfil">👤 Perfil</a>
+    </nav>
+
+</body>
+</html>

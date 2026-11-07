@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle - Mundo Peludo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body style="background-color: #F9F9F9;">
+
+    <header class="header">
+        <a href="/" style="text-decoration:none; color:#2A3B8F; font-size:1.5rem;">←</a>
+        <h1 class="logo-text">Mundo Peludo</h1>
+        <a href="/carrito" class="cart-icon" style="text-decoration: none; color: inherit;">
+            🛒 <span id="cart-count" th:text="${totalCarrito}">0</span>
+        </a>
+    </header>
+
+    <section style="padding: 20px; background: white; border-radius: 20px; margin: 20px auto; max-width: 800px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        
+        <div style="background: #f8f8f8; border-radius: 20px; height: 250px; display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
+            <img th:src="${producto.imagenUrl}" alt="Producto" style="max-height: 90%; max-width: 90%;">
+        </div>
+
+        <h2 id="nombre-producto" th:text="${producto.nombre}" style="color: #2A3B8F; font-size: 1.4rem;">Nombre</h2>
+        <p th:text="${producto.descripcion}" style="color: #757575; font-size: 0.9rem; margin-bottom: 15px;">Descripción</p>
+        
+        <!-- PRECIO CON O SIN DESCUENTO -->
+        <div th:if="${aplicaDescuento}" style="margin-bottom: 20px;">
+            <p style="font-size: 1rem; color: #aaa; text-decoration: line-through; margin: 0;">S/ <span th:text="${producto.precio}">0.00</span></p>
+            <p style="font-size: 1.5rem; font-weight: 800; color: #4DB6AC; margin: 0;">
+                S/ <span th:text="${#numbers.formatDecimal(producto.precio * 0.85, 1, 2)}">0.00</span>
+                <span style="font-size: 0.8rem; background: #E0F2F1; padding: 3px 8px; border-radius: 5px; vertical-align: middle; margin-left: 10px;">15% Dcto Nuevo</span>
+            </p>
+        </div>
+        <div th:unless="${aplicaDescuento}" style="margin-bottom: 20px;">
+            <p style="font-size: 1.5rem; font-weight: 800; color: #2A3B8F; margin: 0;">S/ <span th:text="${producto.precio}">0.00</span></p>
+        </div>
+
+        <!-- BOTÓN DE COMPRA -->
+        <div style="display: flex; gap: 15px; margin-top: 20px;">
+            <button class="btn-add" id="btn-agregar" th:attr="data-id=${producto.id}" style="flex-grow: 1; padding: 15px; font-size: 1rem;">
+                🛒 Agregar al carrito
+            </button>
+        </div>
+
+    </section>
+
+    <!-- Navegación Inferior (Solo Inicio, Carrito, Perfil) -->
+    <nav class="bottom-nav" style="justify-content: space-around;">
+        <a href="/">🏠 Inicio</a>
+        <a href="/carrito">🛒 Carrito</a>
+        <a href="/perfil">👤 Perfil</a>
+    </nav>
+
+    <script>
+        document.getElementById('btn-agregar').addEventListener('click', function() {
+            const idProducto = this.getAttribute('data-id');
+            
+            fetch(`/carrito/agregar?id=${idProducto}&peso=0`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.totalItems !== undefined) {
+                    document.getElementById('cart-count').innerText = data.totalItems;
+                }
+                mostrarNotificacion("¡Producto agregado al carrito!");
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        function mostrarNotificacion(mensaje) {
+            const toastExistente = document.querySelector('.toast-notification');
+            if (toastExistente) toastExistente.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = `<span class="toast-icon">🐾</span> ${mensaje}`;
+            
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('mostrar'), 100);
+
+            setTimeout(() => {
+                toast.classList.remove('mostrar');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

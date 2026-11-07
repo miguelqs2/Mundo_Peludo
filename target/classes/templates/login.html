@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar Sesión - Mundo Peludo</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .auth-container { max-width: 400px; margin: 60px auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .auth-container h2 { color: var(--azul); text-align: center; margin-bottom: 20px; }
+        .auth-container input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; }
+        .auth-container button { width: 100%; padding: 12px; background: var(--naranja); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .auth-link { text-align: center; margin-top: 15px; display: block; color: var(--azul); text-decoration: none; }
+        .alert-success { background: #d4edda; color: #155724; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
+        .alert-error { background: #f8d7da; color: #721c24; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
+    </style>
+</head>
+<body style="background: #F9F9F9;">
+
+    <div class="auth-container">
+        <h2>Iniciar Sesión</h2>
+        
+        <div th:if="${param.registrado}" class="alert-success">¡Registro exitoso! Ahora puedes iniciar sesión.</div>
+        <div th:if="${param.error}" class="alert-error">Correo o contraseña incorrectos.</div>
+        <div th:if="${param.logout}" class="alert-success">Has cerrado sesión correctamente.</div>
+
+        <form th:action="@{/login}" method="post">
+            <input type="email" name="username" placeholder="Correo electrónico" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            <button type="submit">Entrar</button>
+        </form>
+        
+        <a href="/registro" class="auth-link">¿No tienes cuenta? Regístrate y obtén 15% de descuento</a>
+        <a href="/" style="display:block; text-align:center; margin-top: 10px; color: #757575; text-decoration: none;">Volver a la tienda</a>
+    </div>
+
+</body>
+</html>

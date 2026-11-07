@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro - Mundo Peludo</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .auth-container { max-width: 400px; margin: 60px auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .auth-container h2 { color: var(--azul); text-align: center; margin-bottom: 10px; }
+        .auth-container p.sub { text-align: center; color: var(--gris); margin-bottom: 20px; font-size: 0.9rem; }
+        .auth-container input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; }
+        .auth-container button { width: 100%; padding: 12px; background: #4DB6AC; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .auth-link { text-align: center; margin-top: 15px; display: block; color: var(--azul); text-decoration: none; }
+        .alert-error { background: #f8d7da; color: #721c24; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 15px; }
+    </style>
+</head>
+<body style="background: #F9F9F9;">
+
+    <div class="auth-container">
+        <h2>Crear Cuenta</h2>
+        <p class="sub">¡Regístrate y obtén <strong>15% de descuento</strong> en tu primera compra!</p>
+
+        <div th:if="${error}" class="alert-error" th:text="${error}">Error</div>
+
+        <form th:action="@{/registro}" th:object="${usuario}" method="post">
+            <input type="text" th:field="*{nombre}" placeholder="Tu nombre completo" required>
+            <input type="email" th:field="*{email}" placeholder="Correo electrónico" required>
+            <input type="password" th:field="*{password}" placeholder="Contraseña" required>
+            <input type="password" name="confirmPassword" placeholder="Confirmar contraseña" required>
+            <button type="submit">Registrarme</button>
+        </form>
+        
+        <a href="/login" class="auth-link">¿Ya tienes cuenta? Inicia sesión</a>
+        <a href="/" style="display:block; text-align:center; margin-top: 10px; color: #757575; text-decoration: none;">Volver a la tienda</a>
+    </div>
+
+</body>
+</html>

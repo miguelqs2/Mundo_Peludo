@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Mundo Peludo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body style="background-color: #F9F9F9;">
+
+    <header class="header">
+        <a href="/" style="text-decoration:none; color:#2A3B8F; font-size:1.5rem;">←</a>
+        <h1 class="logo-text">Mi Perfil</h1>
+        <div style="width: 24px;"></div>
+    </header>
+
+    <div style="width: 100%; max-width: 800px; margin: 0 auto; padding: 20px;">
+        
+        <!-- Saludo -->
+        <div class="perfil-saludo">
+            <div class="avatar">👤</div>
+            <div>
+                <h2>¡Hola, <span th:text="${usuario.nombre}">Giselle</span>!</h2>
+                <p>Cliente Peludo</p>
+            </div>
+        </div>
+
+        <!-- Sección de Pedidos -->
+        <div class="pedidos-section" style="margin-top: 20px;">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="color: #2A3B8F; margin: 0;">Mis pedidos</h3>
+                <a href="#" class="ver-todos">Ver todos ></a>
+            </div>
+            
+            <!-- Si no hay pedidos -->
+            <div th:if="${#lists.isEmpty(pedidos)}" style="background: white; padding: 40px; border-radius: 15px; text-align: center; color: #757575;">
+                <span style="font-size: 3rem;">🐶</span>
+                <h3 style="margin-top: 10px;">Aún no tienes pedidos</h3>
+                <p>¡Anímate a comprar y consiente a tu mascota!</p>
+                <a href="/" style="display: inline-block; margin-top: 15px; background: #FF8A65; color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: bold;">Ir a la tienda</a>
+            </div>
+
+            <!-- Lista de pedidos -->
+            <div th:each="pedido : ${pedidos}" class="pedido-card">
+                <div class="pedido-info">
+                    <span>🚚</span>
+                    <div>
+                        <p class="pedido-id">Pedido #MP<span th:text="${pedido.id}">0000</span></p>
+                        <p class="pedido-estado" th:text="${pedido.estado}">Preparando</p>
+                        <p style="font-size: 0.8rem; color: #4DB6AC; font-weight: bold; margin: 0;">Total: S/ <span th:text="${#numbers.formatDecimal(pedido.total, 1, 2)}">0.00</span></p>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-step active">Preparando</div>
+                    <div class="progress-step">En camino</div>
+                    <div class="progress-step">Entregado</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Banner de Bienvenida -->
+        <div class="banner-descuento" style="margin-top: 30px;">
+            <h3>¡Bienvenido!</h3>
+            <p>Disfruta 15% de descuento en tu primera compra</p>
+            <div class="cupon">PELUDOFIRST15</div>
+        </div>
+    </div>
+
+    <!-- Barra Inferior (Inicio, Carrito, Perfil) -->
+    <nav class="bottom-nav" style="justify-content: space-around;">
+        <a href="/">🏠 Inicio</a>
+        <a href="/carrito">🛒 Carrito</a>
+        <a href="/perfil" class="active">👤 Perfil</a>
+    </nav>
+
+</body>
+</html>

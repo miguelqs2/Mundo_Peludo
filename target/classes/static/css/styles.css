@@ -1,0 +1,303 @@
+:root {
+    --azul: #2A3B8F;
+    --rosa: #F48FB1;
+    --naranja: #FF8A65;
+    --fondo: #F9F9F9;
+    --blanco: #FFFFFF;
+    --gris: #757575;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Nunito', Arial, sans-serif;
+}
+
+body {
+    background-color: var(--fondo);
+    padding-bottom: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra todo el contenido en la pantalla */
+}
+
+/* --- CONTENEDOR PRINCIPAL (Limita el ancho para que no se vea gigante) --- */
+.header, .hero, .categorias-section, .productos-section, .garantias-section, .testimonios-section {
+    width: 100%;
+    max-width: 800px; /* Máximo ancho para que no se estire en PC */
+}
+
+/* --- HEADER --- */
+.header {
+    background: var(--blanco);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-img {
+    height: 100px;
+    width: auto;
+    object-fit: contain;
+}
+
+.logo-text { 
+    color: var(--azul); 
+    font-size: 1.3rem; 
+    font-weight: 800;
+    margin: 0;
+}
+
+.search-bar {
+    background: #F0F0F0;
+    border-radius: 20px;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    width: 40%;
+}
+
+.search-bar input { border: none; background: transparent; outline: none; margin-left: 10px; width: 100%; font-size: 0.9rem; }
+
+/* --- BANNER --- */
+.hero {
+    background: linear-gradient(135deg, #FFD6A5, #FFE0B2);
+    padding: 40px 20px;
+    border-radius: 0 0 25px 25px;
+    margin-bottom: 20px;
+}
+
+.hero h2 { color: var(--azul); font-size: 1.8rem; margin-bottom: 10px; }
+
+/* --- CATEGORÍAS --- */
+.categorias-section { padding: 0 20px; margin-bottom: 25px; }
+.section-title { color: var(--azul); font-size: 1.2rem; margin-bottom: 10px; }
+
+.categorias-grid { 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 15px; 
+}
+
+.categoria-card {
+    border-radius: 15px; 
+    padding: 20px 10px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--azul); font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.categoria-card:hover { transform: scale(1.05); }
+
+.bg-alimento { background-color: #FFCCBC; }
+.bg-juguete { background-color: #D1C4E9; }
+.bg-accesorio { background-color: #C8E6C9; }
+.bg-higiene { background-color: #B3E5FC; }
+.categoria-card .icon { font-size: 1.8rem; margin-bottom: 5px; }
+
+/* --- PRODUCTOS --- */
+.productos-section { padding: 0 20px; }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.ver-todos { color: var(--gris); text-decoration: none; font-size: 0.9rem; }
+
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.producto-card {
+    background: var(--blanco);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    display: flex; flex-direction: column;
+    transition: transform 0.2s;
+}
+
+.producto-card:hover { transform: translateY(-5px); }
+
+.producto-link { text-decoration: none; color: inherit; display: block; }
+.card-image { height: 150px; background: #FAFAFA; display: flex; align-items: center; justify-content: center; padding: 15px; }
+.card-image img { max-height: 100%; max-width: 100%; object-fit: contain; }
+.card-info { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+.card-info h3 { font-size: 0.95rem; color: var(--gris); margin-bottom: 5px; }
+.price { font-weight: 800; color: var(--azul); font-size: 1.1rem; margin-bottom: 15px; margin-top: auto; }
+
+.btn-add {
+    background: var(--naranja); color: white; border: none;
+    padding: 10px; border-radius: 10px; font-weight: 700; cursor: pointer;
+    width: 100%;
+}
+
+/* --- NAVEGACIÓN INFERIOR --- */
+.bottom-nav {
+    position: fixed; bottom: 0; 
+    width: 100%;
+    max-width: 800px;
+    background: var(--blanco);
+    display: flex; justify-content: space-around;
+    padding: 12px 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    border-top-left-radius: 20px; border-top-right-radius: 20px;
+}
+.bottom-nav a {
+    text-decoration: none; color: #BDBDBD; font-size: 0.8rem;
+    display: flex; flex-direction: column; align-items: center; font-weight: 700;
+}
+.bottom-nav a.active { color: var(--azul); }
+
+/* --- ESTILOS PARA LA NOTIFICACIÓN (TOAST) --- */
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px); 
+    background-color: #2A3B8F; 
+    color: white;
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-weight: 700;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+}
+
+.toast-notification.mostrar {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.toast-icon {
+    font-size: 1.2rem;
+}
+
+/* --- ESTILOS PARA LA PANTALLA DE PERFIL --- */
+.perfil-saludo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.avatar {
+    background-color: var(--azul);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.puntos-card {
+    background-color: #E0F2F1;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.puntos-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.puntos-icon {
+    background-color: #B2DFDB;
+    padding: 10px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+}
+
+.puntos-numero {
+    font-size: 1.5rem;
+    color: var(--azul);
+    margin: 0;
+}
+
+.puntos-label {
+    margin: 0;
+    color: var(--gris);
+    font-size: 0.9rem;
+}
+
+.btn-canje {
+    background-color: #4DB6AC;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.pedido-card {
+    background: white;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin-bottom: 15px;
+}
+
+.pedido-info {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.pedido-id { font-weight: 800; color: var(--azul); margin: 0; }
+.pedido-estado { color: var(--gris); font-size: 0.9rem; margin: 0; }
+
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--gris);
+}
+
+.progress-step.active {
+    color: #4DB6AC;
+    font-weight: bold;
+}
+
+.banner-descuento {
+    background-color: #FFF9C4;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.banner-descuento h3 { color: var(--azul); margin-top: 0; }
+.cupon {
+    background: white;
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin-top: 10px;
+    font-weight: 800;
+    color: var(--azul);
+}

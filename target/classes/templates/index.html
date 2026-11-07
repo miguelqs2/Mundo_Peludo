@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mundo Peludo - Pet Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap; gap: 15px;">
+        
+        <div class="logo-area" style="flex-shrink: 0;">
+            <img src="/img/logoMP.png" alt="Mundo Peludo" class="logo-img">
+            <h1 class="logo-text">Mundo Peludo</h1>
+        </div>
+        
+        <!-- Buscador sin emoji -->
+        <form action="/buscar" method="get" class="search-bar" style="flex-grow: 1; max-width: 400px; margin: 0 20px; padding-left: 15px;">
+            <input type="text" name="query" placeholder="Buscar productos..." required style="width: 100%; border: none; background: transparent; outline: none;">
+        </form>
+
+        <div style="display: flex; align-items: center; gap: 15px; flex-shrink: 0;">
+            <a href="/carrito" class="cart-icon" style="text-decoration: none; color: inherit; display: flex; align-items: center; font-weight: bold;">
+                🛒 <span id="cart-count" th:text="${totalCarrito}" style="margin-left: 5px;">0</span>
+            </a>
+            
+            <div style="display: flex; align-items: center; gap: 12px; font-size: 0.9rem; border-left: 1px solid #eee; padding-left: 15px;">
+                <th:block th:if="${#authorization.expression('!isAuthenticated()')}">
+                    <a href="/login" style="text-decoration: none; color: #2A3B8F; font-weight: bold;">Iniciar Sesión</a>
+                    <a href="/registro" style="text-decoration: none; color: #FF8A65; font-weight: bold;">Registrarse</a>
+                </th:block>
+                
+                <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+                    <a href="/perfil" style="text-decoration: none; color: #2A3B8F; font-weight: bold;">Mi Perfil</a>
+                    <form th:action="@{/logout}" method="post" style="margin: 0;">
+                        <button type="submit" style="background: none; border: none; color: #FF8A65; font-weight: bold; cursor: pointer; font-size: 0.9rem; padding: 0;">Salir</button>
+                    </form>
+                </th:block>
+            </div>
+        </div>
+    </header>
+
+    <!-- Banner Principal (Hero) -->
+    <section class="hero" style="text-align: center; padding: 30px 20px; border-radius: 0 0 20px 20px;">
+        <div class="hero-content">
+            <h2 style="font-size: 1.5rem; margin-bottom: 8px;">El mejor cuidado para<br>quienes más quieres</h2>
+            <p style="margin-bottom: 15px; font-size: 0.95rem; color: #555;">
+                <strong>¡Regístrate y obtén 15% de descuento</strong> en tu primera compra!
+            </p>
+            <a href="/registro" style="display: inline-block; background-color: #FF8A65; color: white; padding: 10px 30px; border-radius: 30px; text-decoration: none; font-weight: 800; font-size: 1rem; box-shadow: 0 4px 10px rgba(255, 138, 101, 0.4); transition: 0.3s;">
+                Registrarme ahora
+            </a>
+        </div>
+    </section>
+
+    <!-- Sección de Categorías -->
+    <section class="categorias-section" id="categorias">
+        <h2 class="section-title">Categorías</h2>
+        <div class="categorias-grid">
+            <a th:href="@{/categoria/Alimentos}" class="categoria-card bg-alimento" style="text-decoration: none;"><span class="icon">🥣</span><p>Alimentos</p></a>
+            <a th:href="@{/categoria/Juguetes}" class="categoria-card bg-juguete" style="text-decoration: none;"><span class="icon">🦴</span><p>Juguetes</p></a>
+            <a th:href="@{/categoria/Accesorios}" class="categoria-card bg-accesorio" style="text-decoration: none;"><span class="icon">🦮</span><p>Accesorios</p></a>
+            <a th:href="@{/categoria/Higiene}" class="categoria-card bg-higiene" style="text-decoration: none;"><span class="icon">🧴</span><p>Higiene</p></a>
+        </div>
+    </section>
+
+    <!-- Grid de Productos Destacados -->
+    <section class="productos-section" id="productos">
+        <div class="section-header">
+            <h2 class="section-title" th:if="${categoriaSeleccionada == null}">Productos destacados</h2>
+            <h2 class="section-title" th:if="${categoriaSeleccionada != null}" th:text="${categoriaSeleccionada}">Categoría</h2>
+            <a href="/" class="ver-todos">Ver todos ></a>
+        </div>
+        
+        <div class="productos-grid">
+            <div th:if="${#lists.isEmpty(productos)}" style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 15px; color: #757575;">
+                <h3>No encontramos productos con ese nombre 🐶</h3>
+                <a href="/" style="color: #FF8A65; font-weight: bold; text-decoration: none; margin-top: 10px; display: inline-block;">Volver a ver todos</a>
+            </div>
+
+            <a th:href="@{/producto/{id}(id=${prod.id})}" class="producto-link" th:each="prod : ${productos}">
+                <div class="producto-card">
+                    <div class="card-image"><img th:src="${prod.imagenUrl}" alt="Producto"></div>
+                    <div class="card-info">
+                        <h3 th:text="${prod.nombre}">Nombre</h3>
+                        
+                        <!-- Precio con o sin descuento -->
+                        <p class="price" th:unless="${aplicaDescuento}" style="font-weight: 800; color: #2A3B8F; font-size: 1.1rem; margin-bottom: 15px;">S/ <span th:text="${prod.precio}">0.00</span></p>
+                        <p class="price" th:if="${aplicaDescuento}" style="font-weight: 800; color: #2A3B8F; font-size: 1.1rem; margin-bottom: 15px;">
+                            <span style="text-decoration: line-through; color: #aaa; font-size: 0.9rem;">S/ <span th:text="${prod.precio}">0.00</span></span><br>
+                            S/ <span th:text="${#numbers.formatDecimal(prod.precio * 0.85, 1, 2)}">0.00</span> <span style="color: #4DB6AC; font-size: 0.8rem; font-weight: bold;">(-15%)</span>
+                        </p>
+                        
+                        <button class="btn-add" th:onclick="agregarAlCarrito(event, ${prod.id})">Agregar al carrito</button>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Sellos de Garantía -->
+    <section class="garantias-section" style="padding: 40px 20px; text-align: center; background: white; margin-top: 30px;">
+        <h2 class="section-title" style="margin-bottom: 20px;">¿Por qué comprar en Mundo Peludo?</h2>
+        <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px;">
+            <div style="flex: 1; min-width: 150px;"><span style="font-size: 2.5rem;">🚚</span><h4 style="color: #2A3B8F; margin: 10px 0 5px 0;">Envío Rápido</h4><p style="font-size: 0.9rem; color: #757575;">A todo Lima en 24 horas.</p></div>
+            <div style="flex: 1; min-width: 150px;"><span style="font-size: 2.5rem;">🔒</span><h4 style="color: #2A3B8F; margin: 10px 0 5px 0;">Pago Seguro</h4><p style="font-size: 0.9rem; color: #757575;">Tus datos están protegidos.</p></div>
+            <div style="flex: 1; min-width: 150px;"><span style="font-size: 2.5rem;">⭐</span><h4 style="color: #2A3B8F; margin: 10px 0 5px 0;">Calidad Garantizada</h4><p style="font-size: 0.9rem; color: #757575;">Las mejores marcas del mercado.</p></div>
+        </div>
+    </section>
+
+    <!-- Testimonios -->
+    <section class="testimonios-section" style="padding: 40px 20px; text-align: center;">
+        <h2 class="section-title" style="margin-bottom: 20px;">Lo que dicen nuestros clientes</h2>
+        <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+            <div style="background: white; padding: 20px; border-radius: 15px; width: 250px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: left;">
+                <div style="color: #FFC107; margin-bottom: 10px;">⭐⭐⭐⭐⭐</div>
+                <p style="font-size: 0.9rem; color: #555; font-style: italic; margin-bottom: 15px;">"Excelente servicio. Mi perrito Rocky está feliz con su nuevo alimento. ¡Llegó súper rápido!"</p>
+                <div style="display: flex; align-items: center; gap: 10px;"><div style="background: #FFCCBC; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #2A3B8F;">M</div><div><h5 style="color: #2A3B8F; margin: 0;">María G.</h5><p style="font-size: 0.75rem; color: #999; margin: 0;">Cliente frecuente</p></div></div>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 15px; width: 250px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: left;">
+                <div style="color: #FFC107; margin-bottom: 10px;">⭐⭐⭐⭐⭐</div>
+                <p style="font-size: 0.9rem; color: #555; font-style: italic; margin-bottom: 15px;">"Los juguetes son de muy buena calidad. Me encanta que tengan de todo para gatos y perros."</p>
+                <div style="display: flex; align-items: center; gap: 10px;"><div style="background: #D1C4E9; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #2A3B8F;">J</div><div><h5 style="color: #2A3B8F; margin: 0;">Jorge P.</h5><p style="font-size: 0.75rem; color: #999; margin: 0;">Dueño de 2 gatos</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navegación Inferior Unificada -->
+    <nav class="bottom-nav" style="justify-content: space-around;">
+        <a href="/" class="active">🏠 Inicio</a>
+        <a href="/carrito">🛒 Carrito</a>
+        <a href="/perfil">👤 Perfil</a>
+    </nav>
+
+    <!-- Script AJAX -->
+    <script>
+        function agregarAlCarrito(event, idProducto) {
+            if (event) { event.preventDefault(); event.stopPropagation(); }
+            fetch(`/carrito/agregar?id=${idProducto}&peso=0`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('cart-count').innerText = data.totalItems;
+                mostrarNotificacion("¡Producto agregado al carrito!");
+            })
+            .catch(error => { console.error('Error:', error); mostrarNotificacion("Error al agregar"); });
+        }
+        function mostrarNotificacion(mensaje) {
+            const toastExistente = document.querySelector('.toast-notification');
+            if (toastExistente) toastExistente.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = `<span class="toast-icon">🐾</span> ${mensaje}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('mostrar'), 100);
+            setTimeout(() => { toast.classList.remove('mostrar'); setTimeout(() => toast.remove(), 400); }, 3000);
+        }
+    </script>
+</body>
+</html>

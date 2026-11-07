@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Producto - Admin</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .admin-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .admin-container h2 {
+            color: var(--azul);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            font-weight: bold;
+            color: var(--azul);
+            display: block;
+            margin-bottom: 8px;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: var(--naranja);
+        }
+        
+        /* Estilo para el mensaje de éxito */
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body style="background: #F9F9F9;">
+
+    <div class="admin-container">
+        <h2>Agregar Nuevo Producto</h2>
+
+        <!-- MENSAJE DE ÉXITO (Solo aparece si se guardó un producto) -->
+        <div th:if="${mensajeExito}" class="alert-success">
+            ✅ <span th:text="${mensajeExito}">Producto guardado</span>
+        </div>
+
+        <form th:action="@{/admin/guardar-producto}" th:object="${producto}" method="post">
+            
+            <div class="form-group">
+                <label>Nombre del producto:</label>
+                <input type="text" th:field="*{nombre}" required placeholder="Ej: Juguete para Gato">
+            </div>
+
+            <div class="form-group">
+                <label>Descripción:</label>
+                <textarea th:field="*{descripcion}" rows="3" placeholder="Describe el producto..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Precio (S/):</label>
+                <input type="number" step="0.01" min="0" th:field="*{precio}" required placeholder="0.00">
+            </div>
+
+            <div class="form-group">
+                <label>Categoría:</label>
+                <select th:field="*{categoria.id}" required>
+                    <option value="">-- Selecciona una categoría --</option>
+                    <option th:each="cat : ${categorias}" 
+                            th:value="${cat.id}" 
+                            th:text="${cat.nombre}">Alimentos</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>URL de la Imagen (opcional):</label>
+                <input type="text" th:field="*{imagenUrl}" placeholder="https://...">
+            </div>
+
+            <div class="form-group">
+                <label>Stock:</label>
+                <input type="number" min="0" th:field="*{stock}" required placeholder="Cantidad disponible">
+            </div>
+
+            <!-- BOTÓN PARA GUARDAR Y SEGUIR EN EL FORMULARIO -->
+            <button type="submit" class="btn-add" style="margin-top: 10px; background-color: #4DB6AC;">
+                Guardar y Agregar Otro
+            </button>
+        </form>
+
+        <!-- BOTÓN PARA IR A LA TIENDA (Vista previa) -->
+        <div style="text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
+            <p style="color: #757575; font-size: 0.9rem; margin-bottom: 10px;">¿Quieres ver cómo quedó en la tienda?</p>
+            <a href="/" class="btn-add" style="display: block; text-align: center; text-decoration: none; background-color: var(--naranja); box-sizing: border-box;">
+                🛒 Ir a la Tienda (Vista Previa)
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
